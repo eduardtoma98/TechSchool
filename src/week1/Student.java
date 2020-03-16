@@ -64,7 +64,7 @@ public class Student {
 	@Override
 	public String toString() {
 		return this.getFirstName() + "," + this.getLastName() + "," + this.emailAddress 
-									+ "," + this.getNoOfCredits() + "," + this.getMean() + "\n";
+									+ "," + this.getNoOfCredits() + "," + this.getMean();
 	}
 	
 	

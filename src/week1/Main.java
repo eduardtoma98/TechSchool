@@ -27,7 +27,7 @@ public class Main {
 			while((line = bufferedReader.readLine()) != null) {
 				String[] info = line.split(",");
 				students.add(new Student(info[0], info[1], info[2], Integer.parseInt(info[3]),
-																Double.parseDouble(info[4])));
+								Double.parseDouble(info[4])));
 			}
 			
 			bufferedReader.close();
