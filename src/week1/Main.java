@@ -66,7 +66,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		});
-
+		exec.shutdown();
 		students.sort(new Comparator<Student>() {
 			@Override
 			public int compare(Student stud1, Student stud2) {
