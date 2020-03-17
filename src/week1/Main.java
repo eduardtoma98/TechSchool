@@ -11,37 +11,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
 	
-	public void parseFile(String filename, List<Student> students) {
-		String line = null;
-		try {
-			FileReader fileReader = new FileReader(filename);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			
-			while((line = bufferedReader.readLine()) != null) {
-				String[] info = line.split(",");
-				students.add(new Student(info[0], info[1], info[2], Integer.parseInt(info[3]),
-								Double.parseDouble(info[4])));
-			}
-			
-			bufferedReader.close();
-		} catch(FileNotFoundException e) {
-			System.out.println("Unable to open file");
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	} 
-	
 	public static void main(String[] args) {
-		
+		ExecutorService exec = Executors.newFixedThreadPool(2);
+		List<Future<List<Student>>> results = new ArrayList<>();
 		List<Student> students = new ArrayList<>();
-		Main m = new Main();
 		
 		//list all files from directory
 		try (Stream<Path> walk = Files.walk(Paths.get("E:\\WebDev\\TechSchool\\facultate"))) {
@@ -56,9 +41,16 @@ public class Main {
 		}
 		
 		//parse files and populate list
-		m.parseFile("facultate\\studenti-automatica.txt", students);
-		m.parseFile("facultate\\studenti-calculatoare.txt", students);
-		
+		results.add(exec.submit(new MyFileReader("facultate\\studenti-automatica.txt")));
+		results.add(exec.submit(new MyFileReader("facultate\\studenti-calculatoare.txt")));
+		results.stream().forEach(f->{
+			try {
+				students.addAll(f.get());
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		});
+
 		students.sort(new Comparator<Student>() {
 			@Override
 			public int compare(Student stud1, Student stud2) {
