@@ -23,10 +23,26 @@ import java.util.stream.Stream;
 
 public class Main {
 	
+	public void writeFile(String filename, List<Student> students) {
+		try{
+			FileWriter fileWriter = new FileWriter(filename);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			
+			for(Student student : students){
+				bufferedWriter.write(student.toString());
+				bufferedWriter.newLine();
+			}
+			
+			bufferedWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public static void main(String[] args) {
 		ExecutorService exec = Executors.newFixedThreadPool(2);
 		List<Future<List<Student>>> results = new ArrayList<>();
 		List<Student> students = new ArrayList<>();
+		Main m = new Main();
 		
 		//list all files from directory
 		try (Stream<Path> walk = Files.walk(Paths.get("E:\\WebDev\\TechSchool\\facultate"))) {
@@ -69,20 +85,7 @@ public class Main {
 			
 		});
 		
-		
-		//write output
-		try{
-			FileWriter fileWriter = new FileWriter("studenti.txt");
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			
-			for(Student student : students){
-				bufferedWriter.write(student.toString());
-				bufferedWriter.newLine();
-			}
-			
-			bufferedWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		m.writeFile("studenti.txt", students);
+
 	}
 }
